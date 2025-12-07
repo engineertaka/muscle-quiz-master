@@ -1,316 +1,131 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Muscle Quiz Master - Prototype</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muscle Quiz Master</title>
   <style>
-    :root{
-      --blue: #2D6CDF;
-      --green: #40C38E;
-      --bg: #ffffff;
-      --muted: #f4f7fb;
-      --text: #1f2937;
-      --danger: #ef4444;
-      --success: #10b981;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f7f7f7;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Yu Gothic', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-      background:var(--muted);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
+    .quiz-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
-    .app{
-      max-width:760px;
-      margin:28px auto;
-      background:var(--bg);
-      border-radius:12px;
-      box-shadow:0 8px 28px rgba(16,24,40,0.08);
-      overflow:hidden;
+    h1 {
+      text-align: center;
     }
-
-    header{
-      padding:20px 20px;
-      background:linear-gradient(90deg,var(--blue),#3b82f6);
-      color:white;
-      display:flex;
-      gap:12px;
-      align-items:center;
+    .choice {
+      margin: 10px 0;
     }
-    .logo{
-      width:56px;height:56px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px
-    }
-    h1{font-size:18px;margin:0}
-    .subtitle{font-size:12px;opacity:0.9}
-
-    main{padding:20px}
-
-    .center{display:flex;flex-direction:column;align-items:center;gap:14px}
-
-    .btn{
-      display:inline-block;padding:12px 18px;border-radius:10px;font-weight:600;border:none;cursor:pointer;
-      background:var(--blue);color:white;box-shadow:0 6px 18px rgba(45,108,223,0.14);
-    }
-    .btn.secondary{background:transparent;color:var(--blue);border:2px solid var(--blue)}
-    .btn.ghost{background:transparent;color:var(--text);border:1px solid #e6eefc}
-
-    /* quiz UI */
-    .card{background:linear-gradient(180deg, #ffffff, #fbfdff);border-radius:10px;padding:16px;width:100%;box-shadow:0 6px 18px rgba(16,24,40,0.04)}
-    .progress{height:8px;background:#eef6ff;border-radius:999px;overflow:hidden;margin-bottom:12px}
-    .progress > i{display:block;height:100%;background:var(--green);width:0%}
-
-    .question{font-size:18px;margin-bottom:12px}
-    .choices{display:flex;flex-direction:column;gap:10px}
-    .choice{padding:12px;border-radius:8px;border:1px solid #e6eefc;background:white;cursor:pointer}
-    .choice.correct{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.28)}
-    .choice.wrong{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.18)}
-
-    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:#6b7280}
-
-    .result-box{padding:18px;border-radius:10px;background:linear-gradient(180deg,#f8fffb,#ffffff);text-align:center}
-    .score{font-size:28px;font-weight:700;color:var(--blue)}
-
-    footer{padding:12px 20px;font-size:13px;color:#9aa6c7;text-align:center}
-
-    /* responsive */
-    @media (max-width:640px){
-      .app{margin:12px}
-      header{padding:14px}
-      .logo{width:46px;height:46px}
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <header>
-      <div class="logo">MQ</div>
-      <div>
-        <h1>Muscle Quiz Master</h1>
-        <div class="subtitle">筋肉クイズ - Prototype</div>
-      </div>
-    </header>
 
-    <main>
-      <!-- START screens container -->
-      <div id="screen-root">
-        <!-- home screen -->
-        <section id="screen-home" class="screen">
-          <div class="center">
-            <h2 style="margin:0 0 6px 0">Ready to test your muscle knowledge?</h2>
-            <p style="margin:0;color:#6b7280">Five questions prototype. Theme: Blue / Green</p>
-            <div style="height:10px"></div>
-            <button class="btn" id="startBtn">はじめる</button>
-            <button class="btn secondary" id="chapterBtn">章別で学ぶ（未実装）</button>
-            <div style="height:8px"></div>
-            <button class="btn ghost" id="viewScoreBtn">過去の成績（未保存）</button>
-          </div>
-        </section>
+  <div class="quiz-container">
+    <h1>Muscle Quiz Master</h1>
 
-        <!-- quiz screen -->
-        <section id="screen-quiz" class="screen" style="display:none">
-          <div class="card">
-            <div class="progress" aria-hidden>
-              <i id="progressBar" style="width:0%"></i>
-            </div>
-            <div class="meta"><div id="qCount">第1問 / 全5問</div><div id="timer" style="visibility:hidden">残り: 00</div></div>
-            <div style="height:12px"></div>
-            <div class="question" id="questionText">Question text</div>
-            <div class="choices" id="choicesList"></div>
-            <div class="meta">
-              <div id="statusText">選択してください</div>
-              <div id="scoreText">得点: 0</div>
-            </div>
-          </div>
-        </section>
+    <div id="quiz">
+      <p id="question">読み込み中...</p>
+      <div id="choices"></div>
+      <button id="nextBtn" style="display:none;">次へ</button>
+    </div>
 
-        <!-- result screen -->
-        <section id="screen-result" class="screen" style="display:none">
-          <div class="result-box">
-            <div style="font-size:14px;color:#6b7280">結果発表</div>
-            <div class="score" id="finalScore">5 / 5</div>
-            <p id="finalPercent">正答率 100%</p>
-            <div style="height:12px"></div>
-            <div style="display:flex;gap:8px;justify-content:center">
-              <button class="btn" id="retryBtn">もう一度チャレンジ</button>
-              <button class="btn secondary" id="backHomeBtn">トップに戻る</button>
-            </div>
-            <div style="height:16px"></div>
-            <div id="reviewArea"></div>
-          </div>
-        </section>
+    <div id="result" style="display:none;">
+      <h2>結果</h2>
+      <p id="score"></p>
+      <button onclick="location.reload()">もう一度プレイ</button>
+    </div>
 
-      </div>
-      <!-- END screens container -->
-    </main>
-
-    <footer>
-      © Beginners Fitness · Muscle Quiz Master (Prototype)
-    </footer>
   </div>
 
   <script>
-    // Questions from user (5 questions)
-    const QUESTIONS = [
-      {
-        q: '上腕二頭筋長頭の起始はどこ？',
-        choices: ['烏口突起', '関節上結節', '腸骨稜', '脛骨粗面'],
-        correctIndex: 1,
-        explain: '上腕二頭筋長頭は肩甲骨の関節上結節（supraglenoid tubercle）から起始します。'
-      },
-      {
-        q: '以下の中から腹筋に含まれないものは？',
-        choices: ['腹直筋', '内腹斜筋', '腹横筋', '平腹筋'],
-        correctIndex: 3,
-        explain: '「平腹筋」は実際の解剖学で一般的な筋名ではありません（this is the fake option）。'
-      },
-      {
-        q: 'ハムストリングスの作用は？',
-        choices: ['膝関節の伸展', '股関節の伸展', '股関節屈曲', '膝関節の回旋'],
-        correctIndex: 1,
-        explain: 'ハムストリングスは主に股関節の伸展（および膝関節の屈曲）に関与します。'
-      },
-      {
-        q: '下腿にある筋肉で間違っているものは？',
-        choices: ['後脛骨筋', '腕橈骨主根屈筋', 'ヒラメ筋', '長指伸筋'],
-        correctIndex: 1,
-        explain: '「腕橈骨主根屈筋」は下腿の筋ではありません。下腿には後脛骨筋・ヒラメ筋・長趾伸筋などが含まれます。'
-      },
-      {
-        q: '次のうち腕の屈曲に関与する筋肉は？',
-        choices: ['上腕三頭筋', '上腕筋', '肘筋', '総指伸筋'],
-        correctIndex: 1,
-        explain: '上腕筋は肘関節の屈筋として働きます（上腕二頭筋と協働）。'
-      }
-    ];
+    let questions = [];
+    let currentIndex = 0;
+    let score = 0;
 
-    // app state
-    let state = {
-      index: 0,
-      score: 0,
-      answered: false
+    // ▼ JSON読み込み
+    fetch("questions.json")
+      .then(response => response.json())
+      .then(data => {
+        questions = data;
+        showQuestion();
+      })
+      .catch(error => {
+        document.getElementById("question").innerText = "エラー：JSONが読み込めませんでした。";
+        console.error(error);
+      });
+
+    // ▼ 質問表示
+    function showQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById("question").innerText = q.question;
+
+      const choicesDiv = document.getElementById("choices");
+      choicesDiv.innerHTML = "";
+
+      q.choices.forEach((choice, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.className = "choice";
+        btn.onclick = () => checkAnswer(index);
+        choicesDiv.appendChild(btn);
+        choicesDiv.appendChild(document.createElement("br"));
+      });
+    }
+
+    // ▼ 解答処理
+    function checkAnswer(selected) {
+      const correct = questions[currentIndex].answer;
+
+      if (selected === correct) score++;
+
+      document.getElementById("nextBtn").style.display = "block";
+
+      const choiceButtons = document.querySelectorAll(".choice");
+
+      choiceButtons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === correct) {
+          btn.style.background = "#4CAF50";
+          btn.style.color = "white";
+        } else if (index === selected) {
+          btn.style.background = "#f44336";
+          btn.style.color = "white";
+        }
+      });
+    }
+
+    // ▼ 次の問題へ
+    document.getElementById("nextBtn").onclick = () => {
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        document.getElementById("nextBtn").style.display = "none";
+        showQuestion();
+      } else {
+        showResult();
+      }
     };
 
-    // elements
-    const startBtn = document.getElementById('startBtn');
-    const screenHome = document.getElementById('screen-home');
-    const screenQuiz = document.getElementById('screen-quiz');
-    const screenResult = document.getElementById('screen-result');
-    const questionText = document.getElementById('questionText');
-    const choicesList = document.getElementById('choicesList');
-    const qCount = document.getElementById('qCount');
-    const progressBar = document.getElementById('progressBar');
-    const statusText = document.getElementById('statusText');
-    const scoreText = document.getElementById('scoreText');
-
-    const finalScore = document.getElementById('finalScore');
-    const finalPercent = document.getElementById('finalPercent');
-    const reviewArea = document.getElementById('reviewArea');
-    const retryBtn = document.getElementById('retryBtn');
-    const backHomeBtn = document.getElementById('backHomeBtn');
-
-    startBtn.addEventListener('click', ()=>{
-      startQuiz();
-    });
-
-    retryBtn.addEventListener('click', ()=>{
-      resetAndStart();
-    });
-    backHomeBtn.addEventListener('click', ()=>{
-      showScreen('home');
-    });
-
-    function startQuiz(){
-      state.index = 0; state.score = 0; state.answered = false;
-      showScreen('quiz');
-      renderQuestion();
+    // ▼ 結果画面
+    function showResult() {
+      document.getElementById("quiz").style.display = "none";
+      document.getElementById("result").style.display = "block";
+      document.getElementById("score").innerText = 
+        `正解数：${score} / ${questions.length}`;
     }
-
-    function resetAndStart(){
-      state.index = 0; state.score = 0; state.answered = false;
-      showScreen('quiz');
-      renderQuestion();
-    }
-
-    function showScreen(name){
-      screenHome.style.display = name==='home' ? '' : 'none';
-      screenQuiz.style.display = name==='quiz' ? '' : 'none';
-      screenResult.style.display = name==='result' ? '' : 'none';
-    }
-
-    function renderQuestion(){
-      const i = state.index;
-      const item = QUESTIONS[i];
-      questionText.textContent = item.q;
-      qCount.textContent = `第${i+1}問 / 全${QUESTIONS.length}問`;
-      progressBar.style.width = `${Math.round((i/QUESTIONS.length)*100)}%`;
-      choicesList.innerHTML = '';
-      statusText.textContent = '選択してください';
-      scoreText.textContent = `得点: ${state.score}`;
-      state.answered = false;
-
-      item.choices.forEach((c, idx)=>{
-        const btn = document.createElement('button');
-        btn.className = 'choice';
-        btn.type = 'button';
-        btn.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><span>${c}</span><small style="opacity:0.6">${String.fromCharCode(65+idx)}</small></div>`;
-        btn.addEventListener('click', ()=>handleChoice(idx, btn));
-        choicesList.appendChild(btn);
-      });
-    }
-
-    function handleChoice(idx, btnEl){
-      if(state.answered) return; // prevent double click
-      state.answered = true;
-      const cur = QUESTIONS[state.index];
-      const correct = cur.correctIndex === idx;
-      if(correct){
-        state.score += 1;
-        btnEl.classList.add('correct');
-        statusText.textContent = '正解！';
-      } else {
-        btnEl.classList.add('wrong');
-        statusText.textContent = `不正解。正解は: ${cur.choices[cur.correctIndex]}`;
-        // mark correct one visually
-        const children = choicesList.children;
-        for(let j=0;j<children.length;j++){
-          if(j===cur.correctIndex) children[j].classList.add('correct');
-        }
-      }
-      scoreText.textContent = `得点: ${state.score}`;
-
-      // short delay then next question or result
-      setTimeout(()=>{
-        state.index += 1;
-        if(state.index < QUESTIONS.length){
-          renderQuestion();
-        } else {
-          showResult();
-        }
-      }, 900);
-    }
-
-    function showResult(){
-      showScreen('result');
-      finalScore.textContent = `${state.score} / ${QUESTIONS.length}`;
-      const pct = Math.round((state.score/QUESTIONS.length)*100);
-      finalPercent.textContent = `正答率 ${pct}%`;
-
-      // build review area
-      reviewArea.innerHTML = '';
-      QUESTIONS.forEach((q, i)=>{
-        const row = document.createElement('details');
-        row.style.marginTop = '10px';
-        row.innerHTML = `<summary style="font-weight:600">Q${i+1}: ${q.q}</summary>
-          <div style="padding:8px 4px;color:#374151">選択肢: ${q.choices.join(' / ')}<br><strong>正解:</strong> ${q.choices[q.correctIndex]}<br><em style='color:#6b7280'>${q.explain}</em></div>`;
-        reviewArea.appendChild(row);
-      });
-    }
-
-    // initial screen
-    showScreen('home');
   </script>
+
 </body>
 </html>
